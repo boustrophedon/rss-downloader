@@ -1,0 +1,13 @@
+[package]
+name = "rss-torrent"
+version = "0.1.0"
+authors = ["Harry Stern <hcs@meow.sh>"]
+
+[dependencies]
+clap = "2.26.0"
+rss = "0.7.0"
+serde = "1"
+serde_derive = "1"
+csv = {git = "https://github.com/BurntSushi/rust-csv", tag = "1.0.0-beta.4"}
+xdg = "2.1.0"
+chrono = "0.4.0"
