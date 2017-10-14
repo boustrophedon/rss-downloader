@@ -1,3 +1,12 @@
+extern crate structopt;
+#[macro_use]
+extern crate structopt_derive;
+
+use structopt::StructOpt;
+
+mod commands;
+use commands::RTArgs;
+
 fn main() {
     // As an experiment I'm just going to leave all of my planning/structure comments here in main
     // instead of deleting them or leaving them in a separate uncommitted file like usual.
