@@ -109,4 +109,7 @@ fn main() {
     //  Other TODO:
     //  add lock file to prevent e.g. update being run via cron while you're manually running an
     //  add or delete
+    
+    let options = RTArgs::from_args();
+    println!("{:?}", options);
 }
