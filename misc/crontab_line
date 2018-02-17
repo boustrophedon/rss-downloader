@@ -1,4 +1,4 @@
 # run rss-torrent every 5 minutes.
 # rss-torrent should be in your $PATH, so if you installed via `cargo install`
-# make sure $HOME/.cargo/bin is in your path.
+# make sure $HOME/.cargo/bin is in your path, or use an absolute path to the binary.
 */5 * * * * rss-torrent update

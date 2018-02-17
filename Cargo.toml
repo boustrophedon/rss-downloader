@@ -4,15 +4,16 @@ version = "0.1.0"
 authors = ["Harry Stern <hcs@meow.sh>"]
 
 [dependencies]
-structopt = "0.1.1"
-structopt-derive = "0.1.1"
-fern = "0.4.2"
-rss = "0.7.0"
+structopt = "0.2"
+log = "0.4"
+fern = "0.5"
+rss = "1"
 serde = "1"
 serde_derive = "1"
-csv = {git = "https://github.com/BurntSushi/rust-csv", tag = "1.0.0-beta.4"}
-xdg = "2.1.0"
-chrono = "0.4.0"
+# csv = {git = "https://github.com/BurntSushi/rust-csv", tag = "1.0.0-beta.4"}
+csv = "1.0.0-beta.5"
+chrono = "0.4"
+toml = "0.4"
 
 # [dev-dependencies]
 # assert_cli = "0.5"
