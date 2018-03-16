@@ -2,7 +2,7 @@ use std::env;
 use std::error::Error;
 use std::fs::File;
 use std::io::Read;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use toml;
 
@@ -65,9 +65,6 @@ impl RTConfig {
 
         // I kind of prefer to write returns like this explictly
         // but it's easier to do it like this
-
-        // Also, have to use the turbofish to let it know we're returning a RTConfigValues here for
-        // some reason
         match toml::from_str::<RTConfigValues>(&contents) {
             Ok(config_raw) => return Ok(config_raw.to_config()),
             Err(err) => return Err(Box::new(err)),
@@ -116,7 +113,7 @@ impl RTConfig {
                 Ok(file) => {
                     match RTConfig::from_file(file) {
                         Ok(config) => {
-                            debug!("Found valid config file: {}", path.to_string_lossy());
+                            info!("Found valid config file: {}", path.to_string_lossy());
                             return config;
                         },
                         Err(err) => {

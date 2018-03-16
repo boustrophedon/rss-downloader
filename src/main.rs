@@ -26,18 +26,7 @@ mod delete; use delete::delete_feed;
 
 fn main() {
     let args = RTArgs::from_args();
-
-    let logger = fern::Dispatch::new()
-        .format(|out, message, record| {
-            out.finish(format_args!(
-                "[{}] {}",
-                record.level(),
-                message
-            ))
-        })
-        .level(level_from_verbosity(args.verbosity))
-        .chain(std::io::stdout())
-        .apply().unwrap();
+    setup_logger(level_from_verbosity(args.verbosity));
 
     let config = RTConfig::new(args.config);
 
@@ -52,6 +41,24 @@ fn main() {
 
     if args.update {
         run_update(&config);
+    }
+}
+
+fn setup_logger(log_level: log::LevelFilter) {
+    let logger = fern::Dispatch::new()
+        .format(|out, message, record| {
+            out.finish(format_args!(
+                "[{}] {}",
+                record.level(),
+                message
+            ))
+        })
+        .level(log_level)
+        .chain(std::io::stdout())
+        .apply();
+
+    if !logger.is_ok() {
+        println!("Logging is disabled.");
     }
 }
 
