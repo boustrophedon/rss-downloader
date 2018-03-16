@@ -1,0 +1,4 @@
+data_dir = "."
+torrent_add_command = "echo"
+torrent_add_args = ["Adding torrent:", "_TORRENT_FILE"]
+torrent_file_cache_dir = "/tmp"
