@@ -100,4 +100,4 @@ Other TODO:
 add lock file to prevent e.g. update being run via cron while you're manually running an
 	add or delete
  
-   
+add `config` command where the help text has info on config values and without the help text prints out the config being used and its location. 

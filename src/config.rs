@@ -16,6 +16,8 @@ const ETC_CONFIG_PATH: &str = "/etc/rss_torrent.toml";
 
 // TODO use failure crate instead of a boxed error
 
+/// `data_dir` is the directory where the databases are stored. `torrent_file_cache_dir` is an
+/// optional directory where downloaded torrent files will be stored.
 #[derive(Debug, Clone)]
 pub struct RTConfig {
     pub data_dir: PathBuf,
@@ -68,7 +70,7 @@ impl RTConfigValues {
             }
 
             if !cache_dir.is_dir() {
-                return Err(io::Error::new(ErrorKind::NotFound,
+                return Err(io::Error::new(ErrorKind::InvalidData,
                                           format!("Torrent cache directory is not a directory: {}",
                                                   cache_dir.to_string_lossy())));
             }
@@ -90,17 +92,10 @@ impl RTConfigValues {
 impl RTConfig {
     pub fn from_file(mut f: File) -> Result<RTConfig, Box<Error>> {
         let mut contents = String::new();
-        match f.read_to_string(&mut contents) {
-            Ok(_) => (),
-            Err(err) => return Err(Box::new(err)),
-        }
+        f.read_to_string(&mut contents)?;
 
-        // I kind of prefer to write returns like this explictly
-        // but it's easier to do it like this
-        match toml::from_str::<RTConfigValues>(&contents) {
-            Ok(config_raw) => return config_raw.to_config().map_err(|e| Box::new(e) as Box<Error>),
-            Err(err) => return Err(Box::new(err)),
-        }
+        // I'm not really sure why I have to do the `as Box<Error>` here but not above.
+        toml::from_str::<RTConfigValues>(&contents)?.to_config().map_err(|e| Box::new(e) as Box<Error>)
     }
 
     pub fn new(config_arg: Option<String>) -> RTConfig {
