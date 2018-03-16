@@ -2,11 +2,13 @@ parse args
 
      -u / --update option forces an update after other operations are completed
      -c / --config option overrides the directory for database files
+	 -v... log level
 
 determine if files exist
      first check if commandline arg specifies config directory
      else use xdg crate to check $XDG_CONFIG_DIR/rss-torrent/
      else make them using xdg crate
+ 	 (currently not doing this, just checking a predefined list of directories)
 
 match on command:
      add
@@ -41,6 +43,8 @@ add: add new feed to database
 
  serialize with writer.serialize(entry)
  flush
+
+	TODO Add an option to set the update time to now when adding a feed
 
 alias: create an alias for a feed
      rss-torrent [args] alias URL ALIAS
@@ -92,7 +96,8 @@ delete: remove feed from database
  serialize all in output vector
  TODO: for this and for update, see if there's a read/write csv reader
 
- Other TODO:
- add lock file to prevent e.g. update being run via cron while you're manually running an
- add or delete
+Other TODO:
+add lock file to prevent e.g. update being run via cron while you're manually running an
+	add or delete
+ 
    
