@@ -1,12 +1,12 @@
 use std::env;
 use std::error::Error;
 use std::fs::File;
-use std::io::Read;
+use std::io::{self, Read, ErrorKind};
 use std::path::PathBuf;
 
 use toml;
 
-const DEFAULT_DB_PATH: &str = "/usr/local/share/rss-torrent/feeds.csv";
+const DEFAULT_DATA_DIR: &str = "/usr/local/share/rss-torrent/";
 
 const CONFIG_ENV_VAR: &str = "RSS_TORRENT_CONFIG";
 
@@ -18,8 +18,8 @@ const ETC_CONFIG_PATH: &str = "/etc/rss_torrent.toml";
 
 #[derive(Debug, Clone)]
 pub struct RTConfig {
-    pub db_location: PathBuf,
-    pub torrent_add_cmd: String,
+    pub data_dir: PathBuf,
+    pub torrent_add_command: String,
     pub torrent_add_args: Vec<String>,
     pub torrent_file_cache_dir: Option<PathBuf>,
 }
@@ -27,8 +27,8 @@ pub struct RTConfig {
 impl Default for RTConfig {
     fn default() -> RTConfig {
         RTConfig {
-            db_location: PathBuf::from(DEFAULT_DB_PATH),
-            torrent_add_cmd: "transmission-remote".to_string(),
+            data_dir: PathBuf::from(DEFAULT_DATA_DIR),
+            torrent_add_command: "transmission-remote".to_string(),
             torrent_add_args: vec!["-a".to_string(), "_TORRENT_PATH".to_string(), "-sr".to_string(), 50.to_string()],
             torrent_file_cache_dir: None,
         }
@@ -38,20 +38,52 @@ impl Default for RTConfig {
 // Deserialize to this struct, then convert to actual RTConfig struct
 #[derive(Debug, Clone, Deserialize)]
 pub struct RTConfigValues {
-    db_location: String,
-    torrent_add_cmd: String,
+    data_dir: String,
+    torrent_add_command: String,
     torrent_add_args: Vec<String>,
     torrent_file_cache_dir: Option<String>,
 }
 
 impl RTConfigValues {
-    pub fn to_config(self) -> RTConfig {
-        RTConfig {
-            db_location: PathBuf::from(self.db_location),
-            torrent_add_cmd: self.torrent_add_cmd,
-            torrent_add_args: self.torrent_add_args,
-            torrent_file_cache_dir: self.torrent_file_cache_dir.map(|v| PathBuf::from(v)),
+    // Not sure if I should really be using io::Error here but these are io errors...
+    pub fn to_config(self) -> Result<RTConfig, io::Error> {
+        let data_dir = PathBuf::from(&self.data_dir);
+        let torrent_file_cache_dir = self.torrent_file_cache_dir.map(|v| PathBuf::from(v));
+
+        if !data_dir.exists() {
+            return Err(io::Error::new(ErrorKind::NotFound,
+                                      format!("Data directory not found: {}", data_dir.to_string_lossy())));
         }
+        if !data_dir.is_dir() {
+            return Err(io::Error::new(ErrorKind::InvalidData,
+                                      format!("Data directory is not a directory: {}",
+                                              data_dir.to_string_lossy())));
+        }
+
+        if let Some(ref cache_dir) = torrent_file_cache_dir {
+            if !cache_dir.exists() {
+                return Err(io::Error::new(ErrorKind::NotFound,
+                                          format!("Torrent cache directory not found: {}",
+                                                  cache_dir.to_string_lossy())));
+            }
+
+            if !cache_dir.is_dir() {
+                return Err(io::Error::new(ErrorKind::NotFound,
+                                          format!("Torrent cache directory is not a directory: {}",
+                                                  cache_dir.to_string_lossy())));
+            }
+        }
+
+        // TODO could check that torrent command is also valid, but that there isn't anything in
+        // stdlib that searches the path for you. So we'll leave handling that error to the actual
+        // std::process::Command result.
+
+        Ok(RTConfig {
+            data_dir: data_dir,
+            torrent_add_command: self.torrent_add_command,
+            torrent_add_args: self.torrent_add_args,
+            torrent_file_cache_dir: torrent_file_cache_dir,
+        })
     }
 }
 
@@ -66,7 +98,7 @@ impl RTConfig {
         // I kind of prefer to write returns like this explictly
         // but it's easier to do it like this
         match toml::from_str::<RTConfigValues>(&contents) {
-            Ok(config_raw) => return Ok(config_raw.to_config()),
+            Ok(config_raw) => return config_raw.to_config().map_err(|e| Box::new(e) as Box<Error>),
             Err(err) => return Err(Box::new(err)),
         }
     }
