@@ -94,8 +94,7 @@ impl RTConfig {
         let mut contents = String::new();
         f.read_to_string(&mut contents)?;
 
-        // I'm not really sure why I have to do the `as Box<Error>` here but not above.
-        toml::from_str::<RTConfigValues>(&contents)?.to_config().map_err(|e| Box::new(e) as Box<Error>)
+        toml::from_str::<RTConfigValues>(&contents)?.to_config().map_err(|e| e.into())
     }
 
     pub fn new(config_arg: Option<String>) -> RTConfig {

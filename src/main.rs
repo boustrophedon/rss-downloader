@@ -1,15 +1,20 @@
+extern crate csv;
+
+extern crate fern;
 #[macro_use]
 extern crate log;
-extern crate fern;
 
-#[macro_use]
-extern crate structopt;
+extern crate reqwest;
 
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
+#[macro_use]
+extern crate structopt;
+
 extern crate toml;
+
 
 use structopt::StructOpt;
 
@@ -21,6 +26,7 @@ use commands::{RTArgs, RTCommand};
 
 mod add; use add::add_feed;
 mod alias; use alias::add_alias;
+mod alias_util;
 mod update; use update::run_update;
 mod delete; use delete::delete_feed;
 
