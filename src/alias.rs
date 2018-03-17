@@ -1,6 +1,6 @@
-use commands::Alias;
+use commands::RTAlias;
 use config::RTConfig;
 
-pub fn add_alias(alias: Alias, config: &RTConfig) {
+pub fn add_alias(alias: RTAlias, config: &RTConfig) {
     unimplemented!();
 }

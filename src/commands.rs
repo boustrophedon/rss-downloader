@@ -23,11 +23,11 @@ pub enum RTCommand {
     #[structopt(name = "add")]
     /// Add a feed to the database with optional filters. The feed url may be a url or a
     /// preexisting alias.
-    Add(Add),
+    Add(RTAdd),
 
     #[structopt(name = "alias")]
     /// Add an alias for a rss feed url.
-    Alias(Alias),
+    Alias(RTAlias),
 
     #[structopt(name = "update")]
     /// Run an update, fetching and parsing feeds and adding torrents not seen since the last update.
@@ -36,11 +36,11 @@ pub enum RTCommand {
     #[structopt(name = "delete")]
     /// Delete a feed from the database. `url_or_alias` is optional, but if the `--filters` option
     /// is used without `--all` or a `url_or_alias`, this command does nothing.
-    Delete(Delete)
+    Delete(RTDelete)
 }
 
 #[derive(StructOpt, Debug)]
-pub struct Add {
+pub struct RTAdd {
     /// A RSS feed url or an existing alias.
     pub url_or_alias: String,
 
@@ -51,16 +51,16 @@ pub struct Add {
 }
 
 #[derive(StructOpt, Debug)]
-pub struct Alias {
-    /// The url of an RSS feed.
-    pub url: String,
-
+pub struct RTAlias {
     /// An alias for this url which can be used in `add` and `delete` commands.
     pub alias: String,
+
+    /// The url of an RSS feed.
+    pub url: String,
 }
 
 #[derive(StructOpt, Debug)]
-pub struct Delete {
+pub struct RTDelete {
     /// Delete all feeds from the database with the given url, or a url that matches a given
     /// alias's url.
     pub url_or_alias: Option<String>,

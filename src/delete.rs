@@ -1,6 +1,6 @@
-use commands::Delete;
+use commands::RTDelete;
 use config::RTConfig;
 
-pub fn delete_feed(delete: Delete, config: &RTConfig) {
+pub fn delete_feed(delete: RTDelete, config: &RTConfig) {
     unimplemented!();
 }
