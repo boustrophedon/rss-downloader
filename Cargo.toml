@@ -12,7 +12,7 @@ serde = "1"
 serde_derive = "1"
 # csv = {git = "https://github.com/BurntSushi/rust-csv", tag = "1.0.0-beta.4"}
 csv = "1.0.0-beta.5"
-chrono = "0.4"
+chrono = { version = "0.4", features = ["serde",] }
 toml = "0.4"
 reqwest = "0.8"
 
