@@ -23,11 +23,11 @@ fn open_or_create_alias_db(data_dir: &Path) -> Result<File, Box<Error>> {
         trace!("Alias db found at {}.", db_path.to_string_lossy());
     }
 
-    OpenOptions::new()
+    Ok(OpenOptions::new()
         .read(true)
         .write(true)
         .create(true)
-        .open(db_path).map_err(|e| e.into())
+        .open(db_path)?)
 }
 
 /// Read alias db or create if it does not exist.

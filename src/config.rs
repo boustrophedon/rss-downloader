@@ -50,7 +50,7 @@ impl RTConfigValues {
     // Not sure if I should really be using io::Error here but these are io errors...
     pub fn to_config(self) -> Result<RTConfig, io::Error> {
         let data_dir = PathBuf::from(&self.data_dir);
-        let torrent_file_cache_dir = self.torrent_file_cache_dir.map(|v| PathBuf::from(v));
+        let torrent_file_cache_dir = self.torrent_file_cache_dir.map(PathBuf::from);
 
         if !data_dir.exists() {
             return Err(io::Error::new(ErrorKind::NotFound,
@@ -94,7 +94,7 @@ impl RTConfig {
         let mut contents = String::new();
         f.read_to_string(&mut contents)?;
 
-        toml::from_str::<RTConfigValues>(&contents)?.to_config().map_err(|e| e.into())
+        Ok(toml::from_str::<RTConfigValues>(&contents)?.to_config()?)
     }
 
     pub fn new(config_arg: Option<String>) -> RTConfig {
