@@ -44,7 +44,6 @@ add: add new feed to database
  serialize with writer.serialize(entry)
  flush
 
-	TODO Add an option to set the update time to now when adding a feed
 
 alias: create an alias for a feed
      rss-torrent [args] alias URL ALIAS
@@ -101,3 +100,8 @@ add lock file to prevent e.g. update being run via cron while you're manually ru
 	add or delete
  
 add `config` command where the help text has info on config values and without the help text prints out the config being used and its location. 
+Add an option to set the last update time to the current when adding a feed
+
+Add an option to change all feed urls when changing an alias url
+
+Add a command that displays the most recently updated feeds, and the least recently updated (e.g. rss-torrent status)

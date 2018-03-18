@@ -3,6 +3,7 @@ use csv;
 use std::error::Error;
 use std::path::Path;
 use std::fs::{File, OpenOptions};
+use std::io::Write;
 
 use alias::{AliasRecord, Aliases};
 
@@ -54,13 +55,25 @@ pub fn read_alias_db(data_dir: &Path) -> Result<Aliases, Box<Error>> {
 pub fn write_alias_db(data_dir: &Path, mut aliases: Aliases) -> Result<(), Box<Error>> {
     debug!("Writing alias db.");
 
-    let db_file = open_or_create_alias_db(data_dir)?;
+    let mut db_file = open_or_create_alias_db(data_dir)?;
 
-    let mut writer = csv::Writer::from_writer(db_file);
-
-    for (_, alias) in aliases.drain() {
-        writer.serialize(alias.to_record())?;
+    let mut buf = Vec::new();
+    {
+        let mut writer = csv::Writer::from_writer(&mut buf);
+        for (_, alias) in aliases.drain() {
+            trace!("Serializing alias {}", alias.name);
+            writer.serialize(alias.to_record())?;
+        }
     }
     
-    Ok(())
+    // there should be a better way of doing this
+    let result = db_file.write_all(&mut buf).map_err(|e| {
+        error!("Error writing to file. DATA MAY BE CORRUPTED!");
+        e
+    })
+    .and_then(|_| {
+        db_file.set_len(buf.len() as u64)
+    });
+
+    Ok(result?)
 }

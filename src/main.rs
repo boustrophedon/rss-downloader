@@ -1,5 +1,7 @@
 extern crate csv;
 
+extern crate chrono;
+
 extern crate fern;
 #[macro_use]
 extern crate log;
@@ -26,9 +28,10 @@ use commands::{RTArgs, RTCommand};
 
 mod add; use add::add_feed;
 mod alias; use alias::add_alias;
-mod alias_util;
 mod update; use update::run_update;
 mod delete; use delete::delete_feed;
+mod alias_util;
+mod feed_util;
 
 fn main() {
     let args = RTArgs::from_args();
