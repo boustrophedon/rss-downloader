@@ -15,6 +15,7 @@ csv = "1.0.0-beta.5"
 chrono = { version = "0.4", features = ["serde",] }
 toml = "0.4"
 reqwest = "0.8"
+rayon = "1"
 
 # [dev-dependencies]
 # assert_cli = "0.5"

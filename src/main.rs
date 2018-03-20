@@ -6,7 +6,10 @@ extern crate fern;
 #[macro_use]
 extern crate log;
 
+extern crate rayon;
+
 extern crate reqwest;
+extern crate rss;
 
 extern crate serde;
 #[macro_use]
@@ -63,6 +66,8 @@ fn setup_logger(log_level: log::LevelFilter) {
             ))
         })
         .level(log_level)
+        // TODO it would be nice to be able to configure logging for all targets or something
+        .filter(|metadata| metadata.target().starts_with("rss_torrent"))
         .chain(std::io::stdout())
         .apply();
 
