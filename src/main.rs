@@ -51,7 +51,7 @@ fn main() {
         }
     }
 
-    if args.update {
+    if args.force_update {
         run_update(&config);
     }
 }

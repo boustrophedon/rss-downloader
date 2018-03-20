@@ -1,9 +1,12 @@
 #[derive(StructOpt, Debug)]
 #[structopt(name = "rss-torrent")]
 pub struct RTArgs {
-    #[structopt(short = "u", long = "update")]
+    #[structopt(subcommand)]
+    pub cmd: Option<RTCommand>,
+
+    #[structopt(short = "u", long = "force-update")]
     /// Force an update check after running this command.
-    pub update: bool,
+    pub force_update: bool,
 
     #[structopt(short = "v", parse(from_occurrences))]
     /// Verbosity level. Without this flag, only errors will be printed to stdout. Increasing
@@ -13,9 +16,6 @@ pub struct RTArgs {
     #[structopt(short = "c", long = "config")]
     /// Override the default configuration directory.
     pub config: Option<String>,
-
-    #[structopt(subcommand)]
-    pub cmd: Option<RTCommand>,
 }
 
 #[derive(StructOpt, Debug)]
